@@ -1,5 +1,5 @@
 var mongoc = require("mongodb").MongoClient;
-var mongoUrl = "mongodb://localhost:27017";
+var mongoUrl ="mongodb://ec2-54-89-140-181.compute-1.amazonaws.com";
 
 
 /* Incoming Customer Details */

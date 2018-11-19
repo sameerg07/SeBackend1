@@ -1,26 +1,26 @@
 var mongoc = require("mongodb").MongoClient;
-var mongoUrl = "mongodb://localhost:27017";
+var mongoUrl ="mongodb://ec2-54-89-140-181.compute-1.amazonaws.com";
 
 var getDeliveryDetails = function(req, res, next) {
 	console.log("Delivery Details Get");
-	var deliveryId = req.body.deliveryId;
+	var dg_id = req.body.dg_id;
 	var responseData = {};
 	res.setHeader("Content-Type", "application/json");
 	mongoc.connect(mongoUrl, function(err, db) {
 		if(err) throw err;
 		var dbo = db.db("piggy");
 		var query = {
-			"deliveryId": deliveryId
+			"dg_id": dg_id
 		};
-		dbo.collection("deliveries").findOne(query, function(err, dbResult){
+		dbo.collection("DeliveryGuy").findOne(query, function(err, dbResult){
 			if(err) throw err;
 			responseData["data"] = dbResult;
 			if(dbResult){
-				console.log("Delivery Name : ", dbResult.deliveryName);
+				console.log("Delivery Name : ", dbResult.name_dg);
 				responseData["ok"] = 1;
 				res.send(JSON.stringify(responseData));
 			} else {
-				console.log(`Delivery with Id ${deliveryId} not found`);
+				console.log(`Delivery with Id ${dg_id} not found`);
 				responseData["ok"] = 0;
 				res.send(JSON.stringify(responseData));
 			}
@@ -31,7 +31,7 @@ var getDeliveryDetails = function(req, res, next) {
 
 var getNDeliveryDetails = function(req, res, next) {
 	console.log("Delivery Details Get Many :" + req.body.n);
-	var deliveryId = req.body.deliveryId;
+	var dg_id = req.body.dg_id;
 	var n = req.body.n;
 	var responseData = {};
 	res.setHeader("Content-Type", "application/json");
@@ -39,17 +39,17 @@ var getNDeliveryDetails = function(req, res, next) {
 		if(err) throw err;
 		var dbo = db.db("piggy");
 		var query = {
-			"deliveryId": deliveryId
+			"dg_id": dg_id
 		};
-		dbo.collection("deliveries").find(query).limit(n, function(err, dbResult){
+		dbo.collection("DeliveryGuy").find(query).limit(n, function(err, dbResult){
 			if(err) throw err
 			responseData[dbResult];
 			if(dbResult){
-				console.log("Delivery Name : ", dbResult.deliveryName);
+				console.log("Delivery Name : ", dbResult.name_dg);
 				responseData["ok"] = 1;
 				res.send(JSON.stringify(responseData));
 			} else {
-				console.log(`Delivery with Id ${deliveryId} not found`);
+				console.log(`Delivery with Id ${dg_id} not found`);
 				responseData["ok"] = 0;
 				res.send(JSON.stringify(responseData));
 			}
@@ -66,7 +66,7 @@ var addDeliveryDetails = function(req, res, next) {
 		if(err) throw err;
 		var dbo = db.db("piggy");
 		var query = req.body;
-		dbo.collection("deliveries").insertOne(query, function(err, dbResult){
+		dbo.collection("DeliveryGuy").insertOne(query, function(err, dbResult){
 			if(err) {
 				responseData["ok"] = 0;
 				res.send(JSON.stringify(responseData));
@@ -88,7 +88,7 @@ var deleteDeliveryDetails = function(req, res, next) {
 		if(err) throw err;
 		var dbo = db.db("piggy");
 		var query = req.body;
-		dbo.collection("deliveries").remove(query, function(err, dbResult){
+		dbo.collection("DeliveryGuy").remove(query, function(err, dbResult){
 			if(err) {
 				responseData["ok"] = 0;
 				res.send(JSON.stringify(responseData));
@@ -115,7 +115,7 @@ var updateLocation = function(req, res){
 	res.setHeader("Content-Type", "application/json");
 	var lat = req.body.lat;
 	var lon = req.body.lan;
-	var deliveryId = req.body.deliveryId;
+	var dg_id = req.body.dg_id;
 	var responseData = {}
 	mongoc.connect(mongoUrl, function(err, db) {
 		if(err){
@@ -125,17 +125,15 @@ var updateLocation = function(req, res){
 		}
 		var dbo = db.db("piggy");
 		var query = {
-			'deliveryId': deliveryId,
+			'dg_id': dg_id,
 		}
 		var newValues = {
 			$set:  {
-				'currentLocation': {
-														'lat': lat,
-														'lon': lon
-													}
+								'latitude': lat,
+								'longitude': lon
 			}
 		}
-		dbo.collection('deliveries').updateOne({}, newValues, { upsert: true },  function(err, result) {
+		dbo.collection('DeliveryGuy').updateOne(query, newValues, { upsert: true },  function(err, result) {
 			if(err){
 				responseData["ok"] = 0;
 				res.send(JSON.stringify(responseData));
@@ -150,6 +148,34 @@ var updateLocation = function(req, res){
 	});
 }
 
+var getLocation = function(req, res, next) {
+	console.log("Delivery Details Get");
+	var dg_id = req.body.dg_id;
+	var responseData = {};
+	res.setHeader("Content-Type", "application/json");
+	mongoc.connect(mongoUrl, function(err, db) {
+		if(err) throw err;
+		var dbo = db.db("piggy");
+		var query = {
+			"dg_id": dg_id
+		};
+		dbo.collection("DeliveryGuy").findOne(query, function(err, dbResult){
+			if(err) throw err;
+			responseData["data"] = dbResult;
+			if(dbResult){
+				console.log("Delivery Name : ", dbResult.name_dg);
+				responseData["ok"] = 1;
+				res.send(JSON.stringify(responseData));
+			} else {
+				console.log(`Delivery with Id ${dg_id} not found`);
+				responseData["ok"] = 0;
+				res.send(JSON.stringify(responseData));
+			}
+			console.log("----------\n");
+		});
+	});
+}
+
 
 
 module.exports = {
@@ -158,5 +184,6 @@ module.exports = {
 	addDeliveryDetails: addDeliveryDetails,
 	deleteDeliveryDetails: deleteDeliveryDetails,
 	getCurrentDeliveryDetails: getCurrentDeliveryDetails,
-	updateLocation: updateLocation
+	updateLocation: updateLocation,
+	getLocation: getLocation
 }

@@ -1,5 +1,5 @@
 var mongoc = require("mongodb").MongoClient;
-var mongoUrl = "mongodb://localhost:27017";
+var mongoUrl="mongodb://ec2-54-89-140-181.compute-1.amazonaws.com";
 
 
 /* Incoming Customer Details */
@@ -16,7 +16,7 @@ function insertDB(data){
 	mongoc.connect(mongoUrl, function(err, db){
 		if(err) throw err;
 		var dbo = db.db("piggy");
-		dbo.collection("orders").insertOne(data, function(err, res){
+		dbo.collection("OrdersTable").insertOne(data, function(err, res){
 			if(err) throw err;
 			console.log("Order Inserted into DB");
 			db.close();
@@ -29,8 +29,8 @@ function findCook(cookName){
 		mongoc.connect(mongoUrl, function(err, db){
 		if(err) throw err;
 		var dbo = db.db("piggy");
-		var query = {"cookName": cookName};
-		dbo.collection("cooks").findAll(query, function(err, res){
+		var query = {"cooksName": cooksName};
+		dbo.collection("Cook").findAll(query, function(err, res){
 			if(err) throw err;
 			console.log("Order Inserted into DB");
 			db.close();

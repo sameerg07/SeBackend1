@@ -11,6 +11,10 @@ var loginPage = require('./routes/validateUser');
 var cookDetails = require('./routes/cookDetails');
 var customerDetails = require('./routes/customerDetails');
 var deliveryDetails = require('./routes/deliveryDetails');
+var orderDetails = require('./routes/orderDetails');
+var checkOnDuty = require('./routes/checkOnDuty');
+var reviewDetails = require('./routes/reviewDetails');
+var dishDetails = require('./routes/dishDetails');
 
 var app = express();
 
@@ -50,11 +54,30 @@ app.post('/customer/getCustomerDetails', customerDetails.getCustomerDetails);
 app.post('/customer/getNCustomerDetails', customerDetails.getNCustomerDetails);
 app.post('/customer/addCustomerDetails', customerDetails.addCustomerDetails);
 
-app.post('/delivery/getDerliveryDetails', deliveryDetails.getDeliveryDetails);
-app.post('/delivery/getNDerliveryDetails', deliveryDetails.getNDeliveryDetails);
+app.post('/delivery/getDeliveryDetails', deliveryDetails.getDeliveryDetails);
+app.post('/delivery/getNDeliveryDetails', deliveryDetails.getNDeliveryDetails);
 app.post('/delivery/addDeliveryDetails', deliveryDetails.addDeliveryDetails);
-app.post('/delivery/checkDelivery', deliveryDetails.getCurrentDeliveryDetails)
-app.post('/delivery/locationUpdate', deliveryDetails.updateLocation)
+app.post('/delivery/locationUpdate', deliveryDetails.updateLocation);
+app.post('/delivery/getLocation', deliveryDetails.getLocation);
+
+
+
+app.post('/order/getOrderDetails',orderDetails.getOrderDetails);
+app.post('/order/getNOrderDetails',orderDetails.getNOrderDetails);
+app.post('/order/addOrderDetails',orderDetails.addOrderDetails);
+
+app.post('/checkDeliveryGuyOnDuty',checkOnDuty.checkDeliveryGuyOnDuty);
+app.post('/checkCookOnDuty',checkOnDuty.checkDeliveryGuyOnDuty);
+
+app.post('/review/addReview',reviewDetails.addReview);
+app.post('/review/getNReviews',reviewDetails.getNReviews);
+
+app.post('/cook/getDishDetails',dishDetails.getDishDetails);
+app.post('/cook/getNDishDetails',dishDetails.getNDishDetails);
+app.post('/cook/getNCuisineDetails',dishDetails.getNCuisineDetails);
+app.post('/cook/addDishDetails',dishDetails.addDishDetails);
+app.post('/cook/addIngredients',dishDetails.addIngredientDetails);
+app.post('/cook/getNIngredients',dishDetails.getNIngredients);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,5 +1,5 @@
 var mongoc = require("mongodb").MongoClient;
-var mongoUrl = "mongodb://localhost:27017";
+var mongoUrl ="mongodb://ec2-54-89-140-181.compute-1.amazonaws.com";
 
 var getCookDetails = function(req, res, next) {
 	console.log("Cook's Details Get");
@@ -12,11 +12,11 @@ var getCookDetails = function(req, res, next) {
 		var query = {
 			"cookId": cookId
 		};
-		dbo.collection("cooks").findOne(query, function(err, dbResult){
+		dbo.collection("Cook").findOne(query, function(err, dbResult){
 			if(err) throw err;
 			responseData["data"] = dbResult;
 			if(dbResult){
-				console.log("Cook Name : ", dbResult.cookName);
+				console.log("Cook Name : ", dbResult.cooksName);
 				responseData["ok"] = 1;
 				res.send(JSON.stringify(responseData));
 			} else {
@@ -41,11 +41,11 @@ var getNCookDetails = function(req, res, next) {
 		var query = {
 			"cookId": cookId
 		};
-		dbo.collection("cooks").find(query).limit(n, function(err, dbResult){
+		dbo.collection("Cook").find(query).limit(n, function(err, dbResult){
 			if(err) throw err;
 			responseData["data"] = dbResult;
 			if(dbResult){
-				console.log("Cook Name : ", dbResult.cookName);
+				console.log("Cook Name : ", dbResult.cooksName);
 				responseData["ok"] = 1;
 				res.send(JSON.stringify(responseData));
 			} else {
@@ -67,7 +67,7 @@ var addCookDetails = function(req, res, next) {
 		if(err) throw err;
 		var dbo = db.db("piggy");
 		var query = req.body;
-		dbo.collection("cooks").insertOne(query, function(err, dbResult){
+		dbo.collection("Cook").insertOne(query, function(err, dbResult){
 			if(err) {
 				responseData["ok"] = 0;
 				res.send(JSON.stringify(responseData));
